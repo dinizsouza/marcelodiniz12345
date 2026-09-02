@@ -28,13 +28,13 @@
         h1 { font-size: 22px; margin-bottom: 5px; }
         .subtitulo { font-size: 14px; opacity: 0.9; }
 
-        /* 🔍 BARRA DE PESQUISA */
+        /* 🔍 PESQUISA */
         .barra-pesquisa {
             background: white;
             padding: 12px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .barra-pesquisa input {
             width: 100%;
@@ -47,6 +47,27 @@
             outline: none;
             border-color: #2b6cb0;
         }
+
+        /* 📑 TÍTULOS DAS COLUNAS */
+        .cabecalho-tabela {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e9ecef;
+            font-weight: bold;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #333;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .cab-nome { flex: 2; min-width: 140px; }
+        .cab-medida { width: 60px; text-align: center; }
+        .cab-preco { width: 70px; text-align: center; }
+        .cab-subtotal { width: 90px; text-align: right; }
+        .cab-acao { width: 40px; text-align: center; }
 
         .mes-atual {
             text-align: center;
@@ -77,11 +98,26 @@
         .item-historico {
             display: flex;
             justify-content: space-between;
-            padding: 8px 10px;
+            align-items: center;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
+        .forma-pagto {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        .pagto-dinheiro { background: #28a745; }
+        .pagto-pix { background: #007bff; }
+        .pagto-credito { background: #6f42c1; }
+        .status-pago { color: #28a745; font-weight: bold; }
+
         .botoes {
             text-align: center;
             margin-bottom: 20px;
@@ -134,8 +170,15 @@
             font-size: 15px;
         }
         
+        .etiqueta-medida {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2b6cb0;
+            min-width: 30px;
+        }
+
         input {
-            width: 75px;
+            width: 70px;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -157,13 +200,32 @@
             font-size: 13px;
         }
 
-        /* 🥬 DIFERENCIA HORTIFRUTI */
-        .etiqueta-medida {
-            font-size: 12px;
-            font-weight: bold;
-            color: #2b6cb0;
-            min-width: 30px;
+        /* 💳 FORMA DE PAGAMENTO */
+        .secao-pagamento {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
         }
+        .secao-pagamento h4 { margin-bottom: 10px; color: #222; }
+        .opcao-pagto {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .opcao-pagto.selecionado {
+            border-color: #222;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
+        }
+        .op-dinheiro { background: #d4edda; color: #155724; }
+        .op-pix { background: #cce5ff; color: #004085; }
+        .op-credito { background: #e2d9f3; color: #5a2d82; }
         
         .total-geral {
             background: #222;
@@ -193,7 +255,16 @@
 
 <!-- 🔍 PESQUISA -->
 <div class="barra-pesquisa">
-    <input type="text" id="pesquisa" placeholder="🔍 Digite para buscar... (ex: arroz, tomate)" oninput="filtrarItens()">
+    <input type="text" id="pesquisa" placeholder="🔍 Buscar produto..." oninput="filtrarItens()">
+</div>
+
+<!-- 📑 TÍTULOS DAS COLUNAS -->
+<div class="cabecalho-tabela">
+    <span class="cab-nome">Produto</span>
+    <span class="cab-medida">Qt/Kg</span>
+    <span class="cab-preco">R$</span>
+    <span class="cab-subtotal">Subtotal</span>
+    <span class="cab-acao">✓</span>
 </div>
 
 <div class="mes-atual" id="mesAtual"></div>
@@ -207,9 +278,17 @@
     <div id="listaHistorico"></div>
 </div>
 
+<!-- 💳 FORMA DE PAGAMENTO -->
+<div class="secao-pagamento">
+    <h4>💳 Forma de Pagamento para Finalizar:</h4>
+    <label class="opcao-pagto op-dinheiro selecionado" data-pagto="dinheiro" onclick="selecionarPagto('dinheiro')">💵 Dinheiro</label>
+    <label class="opcao-pagto op-pix" data-pagto="pix" onclick="selecionarPagto('pix')">📱 Pix</label>
+    <label class="opcao-pagto op-credito" data-pagto="credito" onclick="selecionarPagto('credito')">💳 Crédito</label>
+</div>
+
 <!-- 🛠️ BOTÕES -->
 <div class="botoes">
-    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar</button>
+    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar Compra</button>
     <button class="btn-limpar-lista" onclick="iniciarNovaLista()">🔄 Nova Lista</button>
 </div>
 
@@ -232,9 +311,9 @@
 <h2>📋 Outros</h2>
 <div id="secao-outros"></div>
 
-<!-- 💰 TOTAL AUTOMÁTICO -->
+<!-- 💰 TOTAL -->
 <div class="total-geral">
-    TOTAL: R$ <span id="total">0,00</span>
+    TOTAL A PAGAR: R$ <span id="total">0,00</span>
 </div>
 
 <footer>Marcelo Diniz App ©</footer>
@@ -251,13 +330,13 @@ const basicos = [
 ];
 const mistura = ["Ovos","Hambúrguer","Frango","Carne Moída","Linguiça","Bife"];
 const frios = ["Mortadela","Muçarela","Presunto"];
-// 🥬 HORTIFRUTI: POR QUILO
 const horti = ["Alface","Cebola","Tomate","Couve","Manga","Laranja","Maçã","Uva","Batata","Cenoura","Abobrinha","Pimentão"];
 const higiene = ["Papel Higiênico","Sabão Pó","Detergente","Desinfetante","Saco Lixo"];
 const outros = ["Item Extra"];
 
 let contadorId = 0;
 let itens = [];
+let formaPagamento = "dinheiro"; // padrão
 let historico = JSON.parse(localStorage.getItem("historicoDiniz") || "[]");
 
 // ============== DATA ==============
@@ -270,16 +349,16 @@ function obterMes() {
 // ============== INICIALIZA ==============
 function inicializar() {
     document.getElementById("mesAtual").textContent = `MÊS: ${obterMes().toUpperCase()}`;
-    criarGrupo(basicos, "secao-basicos", false); // false = quantidade/unidade
+    criarGrupo(basicos, "secao-basicos", false);
     criarGrupo(mistura, "secao-mistura", false);
     criarGrupo(frios, "secao-frios", false);
-    criarGrupo(horti, "secao-hortifruti", true); // ✅ true = POR QUILO
+    criarGrupo(horti, "secao-hortifruti", true);
     criarGrupo(higiene, "secao-higiene", false);
     criarGrupo(outros, "secao-outros", false);
     atualizarHistorico();
+    destacarPagtoBotao();
 }
 
-// 🧩 CRIA GRUPO: diferença entre unidade e kg
 function criarGrupo(lista, id, ePorKg) {
     const divPai = document.getElementById(id);
     divPai.innerHTML = "";
@@ -291,7 +370,6 @@ function criarGrupo(lista, id, ePorKg) {
         itemEl.className = "item-produto";
         itemEl.id = `item-${idUnico}`;
         
-        // 🥬 Muda etiqueta para Hortifruti
         const etiqueta = ePorKg ? "Kg" : "Qt";
         const dicaPreco = ePorKg ? "R$/kg" : "R$";
         
@@ -317,7 +395,7 @@ function filtrarItens() {
     });
 }
 
-// ✅ CÁLCULO COM VÍRGULA BRASILEIRA
+// ✅ CÁLCULO COM VÍRGULA
 function limparNumero(texto) {
     return parseFloat(texto.replace(",", ".")) || 0;
 }
@@ -352,23 +430,52 @@ function marcar(id) {
     document.getElementById(`item-${id}`).classList.toggle("comprado");
 }
 
-// 💾 HISTÓRICO
+// 💳 PAGAMENTO
+function selecionarPagto(tipo) {
+    formaPagamento = tipo;
+    destacarPagtoBotao();
+}
+function destacarPagtoBotao() {
+    document.querySelectorAll(".opcao-pagto").forEach(b=>b.classList.remove("selecionado"));
+    document.querySelector(`[data-pagto="${formaPagamento}"]`).classList.add("selecionado");
+}
+function getNomePagto(tipo) {
+    switch(tipo){
+        case "dinheiro": return "💵 Dinheiro";
+        case "pix": return "📱 Pix";
+        case "credito": return "💳 Crédito";
+        default: return tipo;
+    }
+}
+function getClassePagto(tipo) {
+    switch(tipo){
+        case "dinheiro": return "pagto-dinheiro";
+        case "pix": return "pagto-pix";
+        case "credito": return "pagto-credito";
+    }
+}
+
+// 💾 HISTÓRICO COM PAGAMENTO
 function finalizarCompras() {
     const total = calcularTudo();
     const mes = obterMes();
     if (total <= 0) return alert("Preencha os valores primeiro!");
 
     const ind = historico.findIndex(h=>h.mes===mes);
-    if (ind >= 0) historico[ind].valor = total;
-    else historico.push({mes, valor:total});
+    if (ind >= 0) {
+        historico[ind].valor = total;
+        historico[ind].pagto = formaPagamento;
+    } else {
+        historico.push({mes, valor:total, pagto: formaPagamento});
+    }
     
     localStorage.setItem("historicoDiniz", JSON.stringify(historico));
-    alert(`✅ Salvo!\nMês: ${mes}\nTotal: R$ ${total.toFixed(2).replace(".", ",")}`);
+    alert(`✅ COMPRA PAGA!\nMês: ${mes}\nTotal: R$ ${total.toFixed(2).replace(".", ",")}\nForma: ${getNomePagto(formaPagamento)}`);
     atualizarHistorico();
 }
 
 function limparTodoHistorico() {
-    if (!confirm("Apagar TODO o histórico?")) return;
+    if (!confirm("⚠️ Apagar TODO o histórico e formas de pagamento?")) return;
     historico = [];
     localStorage.removeItem("historicoDiniz");
     atualizarHistorico();
@@ -377,17 +484,22 @@ function limparTodoHistorico() {
 function atualizarHistorico() {
     const lista = document.getElementById("listaHistorico");
     if (!historico.length) {
-        lista.innerHTML = "<p style='color:#666'>Sem histórico ainda.</p>";
+        lista.innerHTML = "<p style='color:#666'>Sem histórico de compras ainda.</p>";
         return;
     }
     lista.innerHTML = historico
         .sort((a,b)=>a.mes.localeCompare(b.mes))
-        .map(h=>`<div class="item-historico"><span>📅 ${h.mes}</span><span>💲 R$ ${h.valor.toFixed(2).replace(".", ",")}</span></div>`)
+        .map(h=>`<div class="item-historico">
+            <span>📅 ${h.mes}</span>
+            <span class="status-pago">✅ PAGO</span>
+            <span>💲 R$ ${h.valor.toFixed(2).replace(".", ",")}</span>
+            <span class="forma-pagto ${getClassePagto(h.pagto || 'dinheiro')}">${getNomePagto(h.pagto || 'dinheiro')}</span>
+        </div>`)
         .join("");
 }
 
 function iniciarNovaLista() {
-    if (!confirm("Zerar medidas/preços? Histórico fica salvo.")) return;
+    if (!confirm("🔄 Zerar medidas/preços? Histórico com pagamento permanece salvo.")) return;
     itens.forEach(i=>{i.valorMedida=0; i.precoUnitario=0;});
     inicializar();
 }
