@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 25px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .item.comprado span {
+            text-decoration: line-through;
+            color: #718096;
+        }
+
+        .item-acoes button {
+            width: auto;
+            padding: 6px 10px;
+            margin-left: 5px;
+            font-size: 14px;
+        }
+
+        .btn-excluir {
+            background-color: #e53e3e;
+        }
+
+        .btn-excluir:hover {
+            background-color: #c53030;
+        }
+
+        .categoria {
+            font-size: 12px;
+            color: #718096;
+            background: #edf2f7;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        .abas {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .aba {
+            flex: 1;
+            padding: 10px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .aba.ativa {
+            background: #3182ce;
+            color: white;
+        }
+
+        .busca {
+            margin-bottom: 15px;
+        }
+
+        .vazio {
+            text-align: center;
+            color: #718096;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🛒 Lista de Compras</h1>
+
+    <!-- Formulário de Adição -->
+    <div class="form-container">
+        <input type="text" id="nomeItem" placeholder="Nome do produto..." required>
+        <select id="categoria">
+            <option value="alimentos">🥦 Alimentos</option>
+            <option value="limpeza">🧹 Limpeza</option>
+            <option value="higiene">🧴 Higiene</option>
+            <option value="outros">📦 Outros</option>
+        </select>
+        <button onclick="adicionarItem()">Adicionar à Lista</button>
+    </div>
+
+    <!-- Abas -->
+    <div class="abas">
+        <button class="aba ativa" onclick="mostrarAba('lista')">Lista Atual</button>
+        <button class="aba" onclick="mostrarAba('historico')">Histórico</button>
+    </div>
+
+    <!-- Busca -->
+    <input type="text" class="busca" id="busca" placeholder="🔍 Buscar produto..." oninput="filtrarItens()">
+
+    <!-- Lista de Itens -->
+    <div id="lista-container">
+        <div id="lista-itens"></div>
+    </div>
+
+    <!-- Histórico -->
+    <div id="historico-container" style="display: none;">
+        <div id="lista-historico"></div>
+        <button class="btn-excluir" style="margin-top:15px;" onclick="limparHistorico()">Limpar Histórico</button>
+    </div>
+
+
+    <script>
+        let lista = JSON.parse(localStorage.getItem('listaCompras')) || [];
+        let historico = JSON.parse(localStorage.getItem('historicoCompras')) || [];
+        let abaAtual = 'lista';
+
+        // Salvar no armazenamento offline
+        function salvar() {
+            localStorage.setItem('listaCompras', JSON.stringify(lista));
+            localStorage.setItem('historicoCompras', JSON.stringify(historico));
+        }
+
+        // Adicionar item
+        function adicionarItem() {
+            const nome = document.getElementById('nomeItem').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            
+            if (!nome) {
+                alert('Digite o nome do produto!');
+                return;
+            }
+
+            const novoItem = {
+                id: Date.now(),
+                nome: nome,
+                categoria: categoria,
+                comprado: false,
+                dataAdicao: new Date().toLocaleString('pt-BR')
+            };
+
+            lista.push(novoItem);
+            document.getElementById('nomeItem').value = '';
+            salvar();
+            renderizarLista();
+        }
+
+        // Alternar status comprado
+        function marcarComprado(id) {
+            const item = lista.find(i => i.id === id);
+            if (item) {
+                item.comprado = !item.comprado;
+                if (item.comprado) {
+                    item.dataCompra = new Date().toLocaleString('pt-BR');
+                    historico.unshift(item); // Mover para o histórico
+                    lista = lista.filter(i => i.id !== id);
+                }
+                salvar();
+                renderizarLista();
+                renderizarHistorico();
+            }
+        }
+
+        // Excluir item
+        function excluirItem(id) {
+            lista = lista.filter(i => i.id !== id);
+            salvar();
+            renderizarLista();
+        }
+
+        // Renderizar lista
+        function renderizarLista(filtro = '') {
+            const container = document.getElementById('lista-itens');
+            const categorias = {
+                alimentos: '🥦 Alimentos',
+                limpeza: '🧹 Limpeza',
+                higiene: '🧴 Higiene',
+                outros: '📦 Outros'
+            };
+
+            const filtrados = lista.filter(item => 
+                item.nome.toLowerCase().includes(filtro.toLowerCase())
+            );
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<p class="vazio">Nenhum item na lista.</p>';
+                return;
+            }
+
+            container.innerHTML = filtrados.map(item => `
+                <div class="item ${item.comprado ? 'comprado' : ''}">
+                    <div>
+                        <input type="checkbox" ${item.comprado ? 'checked' : ''} 
+                               onchange="marcarComprado(${item.id})">
+                        <span>${item.nome}</span>
+                        <span class="categoria">${categorias[item.categoria]}</span>
+                    </div>
+                    <div class="item-acoes">
+                        <button class="btn-excluir" onclick="excluirItem(${item.id})">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar histórico
+        function renderizarHistorico() {
+            const container = document.getElementById('lista-historico');
+            if (historico.length === 0) {
+                container.innerHTML = '<p class="vazio">Nenhum item comprado ainda.</p>';
+                return;
+            }
+            container.innerHTML = historico.map(item => `
+                <div class="item comprado">
+                    <span>✅ ${item.nome} <small>(${item.dataCompra})</small></span>
+                </div>
+            `).join('');
+        }
+
+        // Filtrar/buscar itens
+        function filtrarItens() {
+            const termo = document.getElementById('busca').value;
+            renderizarLista(termo);
+        }
+
+        // Alternar abas
+        function mostrarAba(nomeAba) {
+            abaAtual = nomeAba;
+            document.querySelectorAll('.aba').forEach(b => b.classList.remove('ativa'));
+            event.target.classList.add('ativa');
+
+            document.getElementById('lista-container').style.display = nomeAba === 'lista' ? 'block' : 'none';
+            document.getElementById('historico-container').style.display = nomeAba === 'historico' ? 'block' : 'none';
+            document.getElementById('busca').style.display = nomeAba === 'lista' ? 'block' : 'none';
+
+            if (nomeAba === 'historico') renderizarHistorico();
+        }
+
+        // Limpar histórico
+        function limparHistorico() {
+            if (confirm('Tem certeza que deseja limpar o histórico?')) {
+                historico = [];
+                salvar();
+                renderizarHistorico();
+            }
+        }
+
+        // Carregar tudo ao abrir
+        renderizarLista();
+    </script>
+</body>
+</html>
