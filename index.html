@@ -1,471 +1,406 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lista de Compras - Marcelo Diniz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcelo Diniz App 🛒</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
-
         body {
-            background-color: #f0f4f8;
-            padding: 12px;
-            max-width: 100%;
-            margin: 0 auto;
+            background-color: #f7f7f7;
+            padding: 15px;
+            max-width: 950px;
+            margin: auto;
         }
-
-        h1 {
+        header {
             text-align: center;
-            color: #2d3748;
-            margin-bottom: 4px;
-            font-size: 22px;
-        }
-
-        .subtitulo {
-            text-align: center;
-            color: #718096;
-            margin-bottom: 16px;
-            font-size: 13px;
-        }
-
-        .form-container {
-            background: white;
-            padding: 14px;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 14px;
-        }
-
-        .linha {
-            display: flex;
-            gap: 10px;
-        }
-
-        .linha div {
-            flex: 1;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 14px 12px;
-            margin: 6px 0;
-            border: 2px solid #e2e8f0;
+            background: #222;
+            color: white;
+            padding: 20px;
             border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        h1 { font-size: 22px; margin-bottom: 5px; }
+        .subtitulo { font-size: 14px; opacity: 0.9; }
+
+        /* ✅ BARRA DE PESQUISA */
+        .barra-pesquisa {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .barra-pesquisa input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
         }
-
-        input:focus, select:focus {
+        .barra-pesquisa input:focus {
             outline: none;
-            border-color: #3182ce;
+            border-color: #2b6cb0;
         }
 
-        button {
-            background-color: #3182ce;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 17px;
-            padding: 14px;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        button:active {
-            background-color: #2b6cb0;
-        }
-
-        .soma-total {
-            background: #ebf8ff;
-            padding: 14px;
-            border-radius: 12px;
+        .mes-atual {
             text-align: center;
-            margin-bottom: 14px;
-            border: 2px solid #90cdf4;
+            background: #ffc107;
+            color: #000;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 17px;
         }
-
-        .soma-total strong {
-            font-size: 20px;
-            color: #2c5282;
-        }
-
-        .abas {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .aba {
-            flex: 1;
-            padding: 12px 8px;
-            background: #e2e8f0;
-            border: none;
+        .painel-historico {
+            background: #e9ecef;
+            padding: 18px;
             border-radius: 10px;
-            cursor: pointer;
-            font-weight: normal;
-            font-size: 15px;
-            color: #2d3748;
+            margin-bottom: 20px;
         }
-
-        .aba.ativa {
-            background-color: #3182ce;
-            color: white;
-        }
-
-        .busca {
-            margin-bottom: 12px;
-        }
-
-        .item {
-            background: white;
-            padding: 14px;
-            border-radius: 12px;
-            margin: 8px 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        .item.comprado {
-            opacity: 0.75;
-        }
-
-        .item.comprado .nome-produto {
-            text-decoration: line-through;
-            color: #718096;
-        }
-
-        .cabecalho-item {
+        .cabecalho-historico {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
         }
-
-        .info-principal {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .info-principal input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            margin-top: 2px;
-            cursor: pointer;
-        }
-
-        .nome-produto {
-            font-weight: bold;
-            font-size: 16px;
-            color: #1a202c;
-            word-break: break-word;
-        }
-
-        .detalhes {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #4a5568;
-            line-height: 1.5;
-        }
-
-        .categoria {
-            display: inline-block;
-            font-size: 12px;
-            color: #718096;
-            background: #edf2f7;
-            padding: 3px 10px;
-            border-radius: 12px;
-            margin-top: 6px;
-        }
-
-        .valor-item {
-            color: #2f855a;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .btn-excluir {
-            background-color: #e53e3e;
-            padding: 8px 10px;
-            font-size: 14px;
-            width: auto;
+        .painel-historico h3 {
+            color: #2b6cb0;
             margin: 0;
-            border-radius: 8px;
-            min-width: 60px;
         }
-
-        .btn-excluir:active {
-            background-color: #c53030;
-        }
-
-        .btn-limpar {
-            background-color: #ed8936;
-            margin-top: 18px;
+        .item-historico {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
             font-size: 15px;
-            padding: 12px;
         }
-
-        .btn-limpar:active {
-            background-color: #dd6b20;
-        }
-
-        .vazio {
+        .botoes {
             text-align: center;
-            color: #718096;
-            padding: 35px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
             font-size: 15px;
         }
-
-        .data-historico {
-            font-size: 12px;
-            color: #718096;
-            margin-top: 6px;
+        .btn-finalizar { background: #28a745; color: white; }
+        .btn-limpar-lista { background: #fd7e14; color: white; }
+        .btn-limpar-historico { background: #dc3545; color: white; padding: 8px 12px; font-size: 13px; }
+        h2 {
+            color: #2b6cb0;
+            margin: 25px 0 12px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 18px;
         }
-
-        small {
-            font-size: 12px;
-            color: #718096;
+        .item-produto {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 6px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .item-produto.oculto {
+            display: none; /* ✅ Esconde itens na busca */
+        }
+        .comprado {
+            background-color: #e8ffeb;
+            text-decoration: line-through;
+            color: #666;
+        }
+        .nome {
+            font-weight: bold;
+            flex: 2;
+            min-width: 160px;
+            font-size: 15px;
+        }
+        input {
+            width: 75px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .subtotal {
+            font-weight: bold;
+            color: #2c5282;
+            min-width: 100px;
+            text-align: right;
+        }
+        .btn-marcar {
+            background: #28a745;
+            color: white;
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+        .total-geral {
+            background: #222;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #555;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
+<header>
     <h1>🛒 Lista de Compras</h1>
-    <p class="subtitulo">Marcelo Diniz — Controle de Gastos</p>
+    <div class="subtitulo">Marcelo Diniz App</div>
+</header>
 
-    <!-- Formulário -->
-    <div class="form-container">
-        <input type="text" id="nomeItem" placeholder="Nome do produto (ex: Arroz)" required autocomplete="off">
-        
-        <div class="linha">
-            <div>
-                <input type="number" id="quantidade" placeholder="Qtd" min="1" value="1">
-            </div>
-            <div>
-                <input type="number" id="valorUnitario" placeholder="Preço R$" step="0.01" min="0" inputmode="decimal">
-            </div>
-        </div>
+<!-- ✅ BARRA DE PESQUISA -->
+<div class="barra-pesquisa">
+    <input type="text" id="pesquisa" placeholder="🔍 Buscar item... (ex: arroz, tomate, pão)" oninput="filtrarItens()">
+</div>
 
-        <select id="categoria">
-            <option value="alimentos">🥦 Alimentos</option>
-            <option value="limpeza">🧹 Limpeza</option>
-            <option value="higiene">🧴 Higiene</option>
-            <option value="outros">📦 Outros</option>
-        </select>
+<div class="mes-atual" id="mesAtual"></div>
 
-        <button onclick="adicionarItem()">➕ Adicionar à Lista</button>
+<!-- Histórico de Gastos com Botão de Limpar -->
+<div class="painel-historico">
+    <div class="cabecalho-historico">
+        <h3>📊 Histórico Mensal (Comparativo)</h3>
+        <button class="btn-limpar-historico" onclick="limparTodoHistorico()">🗑️ Limpar</button>
     </div>
+    <div id="listaHistorico"></div>
+</div>
 
-    <!-- Soma Total -->
-    <div class="soma-total">
-        Valor Total: <strong>R$ <span id="valorTotal">0,00</span></strong>
-    </div>
+<!-- Botões Principais -->
+<div class="botoes">
+    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar Compras</button>
+    <button class="btn-limpar-lista" onclick="iniciarNovaLista()">🔄 Nova Lista</button>
+</div>
 
-    <!-- Abas -->
-    <div class="abas">
-        <button class="aba ativa" onclick="mostrarAba('lista')">📋 Lista</button>
-        <button class="aba" onclick="mostrarAba('historico')">📜 Histórico</button>
-    </div>
+<!-- Categorias -->
+<h2>📦 Itens Básicos Essencial</h2>
+<div id="secao-basicos"></div>
 
-    <!-- Busca -->
-    <input type="text" class="busca" id="busca" placeholder="🔍 Buscar produto..." oninput="filtrarItens()" autocomplete="off">
+<h2>🥩 Itens de Mistura</h2>
+<div id="secao-mistura"></div>
 
-    <!-- Lista Atual -->
-    <div id="lista-container">
-        <div id="lista-itens"></div>
-    </div>
+<h2>🧀 Itens Frios</h2>
+<div id="secao-frios"></div>
 
-    <!-- Histórico -->
-    <div id="historico-container" style="display: none;">
-        <div id="lista-historico"></div>
-        <button class="btn-limpar" onclick="limparHistorico()">🗑️ Limpar Histórico</button>
-    </div>
+<h2>🥬 Horti Fruti</h2>
+<div id="secao-hortifruti"></div>
 
+<h2>🧼 Higiene e Limpeza</h2>
+<div id="secao-higiene"></div>
 
-    <script>
-        let lista = JSON.parse(localStorage.getItem('listaCompras')) || [];
-        let historico = JSON.parse(localStorage.getItem('historicoCompras')) || [];
-        let abaAtual = 'lista';
+<h2>📋 Itens Opcionais</h2>
+<div id="secao-opcionais"></div>
 
-        const categoriasNomes = {
-            alimentos: '🥦 Alimentos',
-            limpeza: '🧹 Limpeza',
-            higiene: '🧴 Higiene',
-            outros: '📦 Outros'
-        };
+<div class="total-geral">
+    TOTAL DA COMPRA: R$ <span id="total">0,00</span>
+</div>
 
-        // Salvar tudo automaticamente
-        function salvar() {
-            localStorage.setItem('listaCompras', JSON.stringify(lista));
-            localStorage.setItem('historicoCompras', JSON.stringify(historico));
-            calcularTotal();
+<footer>Marcelo Diniz App ©</footer>
+
+<script>
+// ============== LISTA DE PRODUTOS ATUALIZADA ==============
+const listaBasicos = [
+    "Arroz","Feijão","Café","Açúcar","Macarrão","Molho de Tomate","Queijo Ralado",
+    "Farinha de Trigo","Farinha Temperada","Molho de Pimenta","Shoyu","Maionese",
+    "Atum","Miojo","Massa Pronta para Bolo","Bolacha Recheada","Bolacha Doce",
+    "Bolacha de Água e Sal","Tempero Sazón","Temperos Variados","Colorau","Alho",
+    "Iogurte","Leite","Creme de Leite","Leite Condensado","Sucrilhos","Manteiga",
+    "Papel Toalha","Polpa de Suco","Suco em Pó","Requeijão","Vinagre",
+    "Pão de Forma", "Bisnaguinha", "Pão de Hot Dog", "Panetone" // ✅ Novos pães
+];
+const listaMistura = [
+    "Cartela de Ovos","Hambúrguer","Frango","Stack","Carne Moída","Linguiça",
+    "Linguiça Calabresa","Carne Suína","Carne Bovina","Salchicha"
+];
+const listaFrios = ["Mortadela","Muçarela","Presunto"];
+// ✅ Nova seção Horti Fruti
+const listaHortiFruti = [
+    "Alface", "Cebola", "Tomate", "Couve", "Manga", "Laranja", "Maçã", "Uva"
+];
+const listaHigiene = [
+    "Papel Higiênico","Sabão em Pó","Pasta de Dente","Gel de Cabelo","Anti Transpirante",
+    "Talco para Pé","Detergente","Candida","Amaciante","Shampoo","Creme de Cabelo",
+    "Desinfetante","Algodão","Escova de Dente","Gel Íntimo","Álcool","Pastilha para Vaso",
+    "Veja","Pedra de Sabão","Saco de Lixo"
+];
+const listaOpcionais = ["Item Opcional","Item Opcional","Item Opcional","Item Opcional"];
+
+let contadorId = 0;
+let itens = [];
+let historico = JSON.parse(localStorage.getItem("historicoComprasDiniz") || "[]");
+
+// ============== DATA ATUAL ==============
+function obterMesAno() {
+    const agora = new Date();
+    const nomeMeses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+    const mes = nomeMeses[agora.getMonth()];
+    const ano = agora.getFullYear();
+    return `${mes}/${ano}`;
+}
+
+// ============== INICIALIZAÇÃO ==============
+function inicializar() {
+    document.getElementById("mesAtual").textContent = `MÊS ATUAL: ${obterMesAno().toUpperCase()}`;
+    criarSecao(listaBasicos, "secao-basicos");
+    criarSecao(listaMistura, "secao-mistura");
+    criarSecao(listaFrios, "secao-frios");
+    criarSecao(listaHortiFruti, "secao-hortifruti"); // ✅ Carrega HortiFruti
+    criarSecao(listaHigiene, "secao-higiene");
+    criarSecao(listaOpcionais, "secao-opcionais");
+    atualizarHistoricoTela();
+}
+
+function criarSecao(lista, idContainer) {
+    const container = document.getElementById(idContainer);
+    container.innerHTML = "";
+    lista.forEach(nome => {
+        const id = contadorId++;
+        itens.push({ id, nome, qt:0, preco:0, comprado:false });
+        const div = document.createElement("div");
+        div.className = "item-produto";
+        div.id = `item-${id}`;
+        div.innerHTML = `
+            <span class="nome">${nome}</span>
+            <input type="number" placeholder="QT" min="0" onchange="atualizarQt(${id}, this.value)">
+            <input type="number" placeholder="R$" min="0" step="0.01" onchange="atualizarPreco(${id}, this.value)">
+            <span class="subtotal">R$ 0,00</span>
+            <button class="btn-marcar" onclick="marcar(${id})">✓</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ✅ FUNÇÃO DE PESQUISA/FILTRO
+function filtrarItens() {
+    const termo = document.getElementById("pesquisa").value.toLowerCase().trim();
+    const todosItens = document.querySelectorAll(".item-produto");
+    
+    todosItens.forEach(div => {
+        const nomeItem = div.querySelector(".nome").textContent.toLowerCase();
+        // Mostra se o nome contém o termo buscado, senão esconde
+        if (nomeItem.includes(termo)) {
+            div.classList.remove("oculto");
+        } else {
+            div.classList.add("oculto");
         }
+    });
+}
 
-        // Calcular valor total da lista
-        function calcularTotal() {
-            let total = 0;
-            lista.forEach(item => {
-                total += (item.quantidade * item.valorUnitario);
-            });
-            document.getElementById('valorTotal').textContent = total.toFixed(2).replace('.', ',');
-        }
+// ============== CÁLCULOS E MARCAÇÃO ==============
+function atualizarQt(id, valor) {
+    const item = itens.find(i => i.id === id);
+    if (item) { item.qt = parseFloat(valor) || 0; calcularTotal(); }
+}
+function atualizarPreco(id, valor) {
+    const item = itens.find(i => i.id === id);
+    if (item) { item.preco = parseFloat(valor.replace(",", ".")) || 0; calcularTotal(); }
+}
+function marcar(id) {
+    document.getElementById(`item-${id}`).classList.toggle("comprado");
+}
+function calcularTotal() {
+    let totalGeral = 0;
+    itens.forEach(item => {
+        const subtotal = item.qt * item.preco;
+        totalGeral += subtotal;
+        const divItem = document.getElementById(`item-${item.id}`);
+        divItem.querySelector(".subtotal").textContent = `R$ ${subtotal.toFixed(2)}`;
+    });
+    document.getElementById("total").textContent = totalGeral.toFixed(2);
+    return totalGeral;
+}
 
-        // Adicionar novo item
-        function adicionarItem() {
-            const nome = document.getElementById('nomeItem').value.trim();
-            const quantidade = parseInt(document.getElementById('quantidade').value) || 1;
-            let valorUnitario = document.getElementById('valorUnitario').value.replace(',', '.');
-            valorUnitario = parseFloat(valorUnitario) || 0;
-            const categoria = document.getElementById('categoria').value;
+// ============== FINALIZAR COMPRAS = SALVA NO HISTÓRICO ==============
+function finalizarCompras() {
+    const total = calcularTotal();
+    const mesAno = obterMesAno();
 
-            if (!nome) {
-                alert('⚠️ Digite o nome do produto!');
-                return;
-            }
+    if (total <= 0) {
+        alert("⚠️ Nenhum valor calculado! Preencha os itens antes de finalizar.");
+        return;
+    }
 
-            const novoItem = {
-                id: Date.now(),
-                nome: nome,
-                quantidade: quantidade,
-                valorUnitario: valorUnitario,
-                categoria: categoria,
-                comprado: false,
-                dataAdicao: new Date().toLocaleString('pt-BR')
-            };
+    const indiceExistente = historico.findIndex(h => h.mes === mesAno);
+    if (indiceExistente >= 0) {
+        historico[indiceExistente].valor = total;
+        alert(`✅ Valor atualizado: ${mesAno} — R$ ${total.toFixed(2)}`);
+    } else {
+        historico.push({ mes: mesAno, valor: total });
+        alert(`🎉 Compras de ${mesAno} finalizadas!\nTotal salvo: R$ ${total.toFixed(2)}`);
+    }
 
-            lista.push(novoItem);
+    localStorage.setItem("historicoComprasDiniz", JSON.stringify(historico));
+    atualizarHistoricoTela();
+}
 
-            // Limpar campos
-            document.getElementById('nomeItem').value = '';
-            document.getElementById('quantidade').value = '1';
-            document.getElementById('valorUnitario').value = '';
+// ============== LIMPAR TODO O HISTÓRICO (COM SEGURANÇA) ==============
+function limparTodoHistorico() {
+    if (!confirm("⚠️ ATENÇÃO! Isso apagará TODOS os meses salvos no histórico.\nEssa ação NÃO pode ser desfeita!\nTem certeza?")) {
+        return;
+    }
+    historico = [];
+    localStorage.removeItem("historicoComprasDiniz");
+    alert("✅ Histórico apagado completamente!");
+    atualizarHistoricoTela();
+}
 
-            salvar();
-            renderizarLista();
-        }
+// ============== MOSTRA HISTÓRICO NA TELA ==============
+function atualizarHistoricoTela() {
+    const container = document.getElementById("listaHistorico");
+    if (historico.length === 0) {
+        container.innerHTML = "<p style='color:#666;'>Nenhuma compra finalizada ainda.</p>";
+        return;
+    }
+    container.innerHTML = historico
+        .sort((a, b) => a.mes.localeCompare(b.mes))
+        .map(h => `<div class="item-historico"><span>📅 ${h.mes}</span><span>💲 R$ ${h.valor.toFixed(2)}</span></div>`)
+        .join("");
+}
 
-        // Marcar como comprado / desmarcar
-        function marcarComprado(id) {
-            const item = lista.find(i => i.id === id);
-            if (item) {
-                item.comprado = !item.comprado;
-                if (item.comprado) {
-                    item.dataCompra = new Date().toLocaleString('pt-BR');
-                    historico.unshift(item);
-                    lista = lista.filter(i => i.id !== id);
-                }
-                salvar();
-                renderizarLista();
-                renderizarHistorico();
-            }
-        }
+// ============== LIMPA PARA PRÓXIMA COMPRA ==============
+function iniciarNovaLista() {
+    if (!confirm("🔄 Isso vai zerar quantidades e preços para nova compra.\nHistórico dos meses anteriores PERMANECE SALVO!\nContinuar?")) {
+        return;
+    }
+    itens.forEach(item => {
+        item.qt = 0;
+        item.preco = 0;
+        item.comprado = false;
+    });
+    inicializar();
+}
 
-        // Excluir item da lista
-        function excluirItem(id) {
-            if (confirm('Excluir este item?')) {
-                lista = lista.filter(i => i.id !== id);
-                salvar();
-                renderizarLista();
-            }
-        }
-
-        // Renderizar lista atual
-        function renderizarLista(filtro = '') {
-            const container = document.getElementById('lista-itens');
-            const filtrados = lista.filter(item => 
-                item.nome.toLowerCase().includes(filtro.toLowerCase())
-            );
-
-            if (filtrados.length === 0) {
-                container.innerHTML = '<p class="vazio">📋 Nenhum item na lista.<br>Adicione produtos acima!</p>';
-                return;
-            }
-
-            container.innerHTML = filtrados.map(item => {
-                const subtotal = (item.quantidade * item.valorUnitario).toFixed(2).replace('.', ',');
-                return `
-                <div class="item">
-                    <div class="cabecalho-item">
-                        <div class="info-principal">
-                            <input type="checkbox" ${item.comprado ? 'checked' : ''} 
-                                   onchange="marcarComprado(${item.id})">
-                            <div>
-                                <div class="nome-produto">${item.nome}</div>
-                                <div class="detalhes">
-                                    Qtd: ${item.quantidade} × R$ ${item.valorUnitario.toFixed(2).replace('.', ',')} = 
-                                    <span class="valor-item">R$ ${subtotal}</span>
-                                </div>
-                                <span class="categoria">${categoriasNomes[item.categoria]}</span>
-                            </div>
-                        </div>
-                        <button class="btn-excluir" onclick="excluirItem(${item.id})">✕</button>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        // Renderizar histórico
-        function renderizarHistorico() {
-            const container = document.getElementById('lista-historico');
-            if (historico.length === 0) {
-                container.innerHTML = '<p class="vazio">📜 Nenhum item comprado ainda.<br>Marque um item como comprado!</p>';
-                return;
-            }
-
-            container.innerHTML = historico.map(item => {
-                const subtotal = (item.quantidade * item.valorUnitario).toFixed(2).replace('.', ',');
-                return `
-                <div class="item comprado">
-                    <div class="nome-produto">✅ ${item.nome}</div>
-                    <div class="detalhes">
-                        Qtd: ${item.quantidade} × R$ ${item.valorUnitario.toFixed(2).replace('.', ',')} = 
-                        <span class="valor-item">R$ ${subtotal}</span>
-                    </div>
-                    <span class="categoria">${categoriasNomes[item.categoria]}</span>
-                    <div class="data-historico">Comprado em: ${item.dataCompra}</div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        // Filtrar/buscar itens
-        function filtrarItens() {
-            const termo = document.getElementById('busca').value;
-            renderizarLista(termo);
-        }
-
-        // Alternar entre Lista e Histórico
-        function mostrarAba(nomeAba) {
-            abaAtual = nomeAba;
-            document.querySelectorAll('.aba').forEach(b => b.classList.remove('ativa'));
-            event.target.classList.add('ativa');
-
-            document.getElementById('lista-container').style.display = nomeAba === 'lista' ? 'block' : 'none';
-            document.getElementById('historico-container').style.display = nomeAba === 'historico' ? 'block' : 'none';
-            document.getElementById('busca').style.display = nomeAba === 'lista' ? 'block' : 'none';
-
-            if (nomeAba === 'historico') renderizarHistorico();
-        }
-
-        // Limpar histórico completo
-        function limparHistorico() {
-            if (confirm('⚠️ Tem certeza?\nO histórico será apagado para sempre!')) {
-                historico = [];
-                salvar();
-                renderizarHistorico();
-            }
-        }
-
-        // Carregar tudo ao abrir a página
-        renderizarLista();
-        calcularTotal();
-    </script>
+window.onload = inicializar;
+</script>
 </body>
 </html>
