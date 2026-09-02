@@ -28,7 +28,7 @@
         h1 { font-size: 22px; margin-bottom: 5px; }
         .subtitulo { font-size: 14px; opacity: 0.9; }
 
-        /* ✅ BARRA DE PESQUISA */
+        /* 🔍 BARRA DE PESQUISA */
         .barra-pesquisa {
             background: white;
             padding: 12px;
@@ -101,6 +101,7 @@
         .btn-finalizar { background: #28a745; color: white; }
         .btn-limpar-lista { background: #fd7e14; color: white; }
         .btn-limpar-historico { background: #dc3545; color: white; padding: 8px 12px; font-size: 13px; }
+        
         h2 {
             color: #2b6cb0;
             margin: 25px 0 12px;
@@ -108,6 +109,7 @@
             border-bottom: 2px solid #e2e8f0;
             font-size: 18px;
         }
+        
         .item-produto {
             background: white;
             display: flex;
@@ -121,20 +123,18 @@
             gap: 8px;
             transition: all 0.3s ease;
         }
-        .item-produto.oculto {
-            display: none; /* ✅ Esconde itens na busca */
-        }
-        .comprado {
-            background-color: #e8ffeb;
-            text-decoration: line-through;
-            color: #666;
-        }
+        
+        /* ✅ Esconde itens na busca */
+        .item-produto.oculto { display: none; }
+        .comprado { background-color: #e8ffeb; text-decoration: line-through; color: #666; }
+        
         .nome {
             font-weight: bold;
             flex: 2;
             min-width: 160px;
             font-size: 15px;
         }
+        
         input {
             width: 75px;
             padding: 8px;
@@ -143,18 +143,21 @@
             text-align: center;
             font-size: 14px;
         }
+        
         .subtotal {
             font-weight: bold;
             color: #2c5282;
             min-width: 100px;
             text-align: right;
         }
+        
         .btn-marcar {
             background: #28a745;
             color: white;
             padding: 6px 10px;
             font-size: 13px;
         }
+        
         .total-geral {
             background: #222;
             color: white;
@@ -165,6 +168,7 @@
             border-radius: 10px;
             margin-top: 15px;
         }
+        
         footer {
             text-align: center;
             padding: 20px;
@@ -180,223 +184,191 @@
     <div class="subtitulo">Marcelo Diniz App</div>
 </header>
 
-<!-- ✅ BARRA DE PESQUISA -->
+<!-- 🔍 PESQUISA -->
 <div class="barra-pesquisa">
-    <input type="text" id="pesquisa" placeholder="🔍 Buscar item... (ex: arroz, tomate, pão)" oninput="filtrarItens()">
+    <input type="text" id="pesquisa" placeholder="🔍 Digite para buscar... (ex: arroz, tomate)" oninput="filtrarItens()">
 </div>
 
 <div class="mes-atual" id="mesAtual"></div>
 
-<!-- Histórico de Gastos com Botão de Limpar -->
+<!-- 📊 HISTÓRICO -->
 <div class="painel-historico">
     <div class="cabecalho-historico">
-        <h3>📊 Histórico Mensal (Comparativo)</h3>
+        <h3>📊 Histórico Mensal</h3>
         <button class="btn-limpar-historico" onclick="limparTodoHistorico()">🗑️ Limpar</button>
     </div>
     <div id="listaHistorico"></div>
 </div>
 
-<!-- Botões Principais -->
+<!-- 🛠️ BOTÕES -->
 <div class="botoes">
-    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar Compras</button>
+    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar</button>
     <button class="btn-limpar-lista" onclick="iniciarNovaLista()">🔄 Nova Lista</button>
 </div>
 
-<!-- Categorias -->
-<h2>📦 Itens Básicos Essencial</h2>
+<!-- 📦 CATEGORIAS -->
+<h2>📦 Básicos Essenciais</h2>
 <div id="secao-basicos"></div>
 
-<h2>🥩 Itens de Mistura</h2>
+<h2>🥩 Mistura / Carnes</h2>
 <div id="secao-mistura"></div>
 
-<h2>🧀 Itens Frios</h2>
+<h2>🧀 Frios</h2>
 <div id="secao-frios"></div>
 
 <h2>🥬 Horti Fruti</h2>
 <div id="secao-hortifruti"></div>
 
-<h2>🧼 Higiene e Limpeza</h2>
+<h2>🧼 Higiene / Limpeza</h2>
 <div id="secao-higiene"></div>
 
-<h2>📋 Itens Opcionais</h2>
-<div id="secao-opcionais"></div>
+<h2>📋 Outros</h2>
+<div id="secao-outros"></div>
 
+<!-- 💰 TOTAL AUTOMÁTICO -->
 <div class="total-geral">
-    TOTAL DA COMPRA: R$ <span id="total">0,00</span>
+    TOTAL: R$ <span id="total">0,00</span>
 </div>
 
 <footer>Marcelo Diniz App ©</footer>
 
 <script>
-// ============== LISTA DE PRODUTOS ATUALIZADA ==============
-const listaBasicos = [
-    "Arroz","Feijão","Café","Açúcar","Macarrão","Molho de Tomate","Queijo Ralado",
-    "Farinha de Trigo","Farinha Temperada","Molho de Pimenta","Shoyu","Maionese",
-    "Atum","Miojo","Massa Pronta para Bolo","Bolacha Recheada","Bolacha Doce",
-    "Bolacha de Água e Sal","Tempero Sazón","Temperos Variados","Colorau","Alho",
-    "Iogurte","Leite","Creme de Leite","Leite Condensado","Sucrilhos","Manteiga",
-    "Papel Toalha","Polpa de Suco","Suco em Pó","Requeijão","Vinagre",
-    "Pão de Forma", "Bisnaguinha", "Pão de Hot Dog", "Panetone" // ✅ Novos pães
+// ============== LISTA DE PRODUTOS COMPLETA ==============
+const basicos = [
+    "Arroz","Feijão","Café","Açúcar","Macarrão","Molho Tomate","Queijo Ralado",
+    "Farinha Trigo","Farinha Temperada","Molho Pimenta","Shoyu","Maionese",
+    "Atum","Miojo","Massa Bolo","Bolacha Recheada","Bolacha Doce","Bolacha Água/Sal",
+    "Tempero Sazón","Temperos Variados","Colorau","Alho","Iogurte","Leite","Creme Leite",
+    "Leite Condensado","Sucrilhos","Manteiga","Papel Toalha","Polpa Suco","Suco Pó",
+    "Requeijão","Vinagre","Pão Forma","Bisnaguinha","Pão Hot Dog","Panetone"
 ];
-const listaMistura = [
-    "Cartela de Ovos","Hambúrguer","Frango","Stack","Carne Moída","Linguiça",
-    "Linguiça Calabresa","Carne Suína","Carne Bovina","Salchicha"
-];
-const listaFrios = ["Mortadela","Muçarela","Presunto"];
-// ✅ Nova seção Horti Fruti
-const listaHortiFruti = [
-    "Alface", "Cebola", "Tomate", "Couve", "Manga", "Laranja", "Maçã", "Uva"
-];
-const listaHigiene = [
-    "Papel Higiênico","Sabão em Pó","Pasta de Dente","Gel de Cabelo","Anti Transpirante",
-    "Talco para Pé","Detergente","Candida","Amaciante","Shampoo","Creme de Cabelo",
-    "Desinfetante","Algodão","Escova de Dente","Gel Íntimo","Álcool","Pastilha para Vaso",
-    "Veja","Pedra de Sabão","Saco de Lixo"
-];
-const listaOpcionais = ["Item Opcional","Item Opcional","Item Opcional","Item Opcional"];
+const mistura = ["Ovos","Hambúrguer","Frango","Carne Moída","Linguiça","Bife"];
+const frios = ["Mortadela","Muçarela","Presunto"];
+const horti = ["Alface","Cebola","Tomate","Couve","Manga","Laranja","Maçã","Uva"];
+const higiene = ["Papel Higiênico","Sabão Pó","Detergente","Desinfetante","Saco Lixo"];
+const outros = ["Item Extra"];
 
 let contadorId = 0;
 let itens = [];
-let historico = JSON.parse(localStorage.getItem("historicoComprasDiniz") || "[]");
+let historico = JSON.parse(localStorage.getItem("historicoDiniz") || "[]");
 
-// ============== DATA ATUAL ==============
-function obterMesAno() {
+// ============== DATA ==============
+function obterMes() {
     const agora = new Date();
-    const nomeMeses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-    const mes = nomeMeses[agora.getMonth()];
-    const ano = agora.getFullYear();
-    return `${mes}/${ano}`;
+    const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+    return `${meses[agora.getMonth()]}/${agora.getFullYear()}`;
 }
 
-// ============== INICIALIZAÇÃO ==============
+// ============== INICIALIZA ==============
 function inicializar() {
-    document.getElementById("mesAtual").textContent = `MÊS ATUAL: ${obterMesAno().toUpperCase()}`;
-    criarSecao(listaBasicos, "secao-basicos");
-    criarSecao(listaMistura, "secao-mistura");
-    criarSecao(listaFrios, "secao-frios");
-    criarSecao(listaHortiFruti, "secao-hortifruti"); // ✅ Carrega HortiFruti
-    criarSecao(listaHigiene, "secao-higiene");
-    criarSecao(listaOpcionais, "secao-opcionais");
-    atualizarHistoricoTela();
+    document.getElementById("mesAtual").textContent = `MÊS: ${obterMes().toUpperCase()}`;
+    criarGrupo(basicos, "secao-basicos");
+    criarGrupo(mistura, "secao-mistura");
+    criarGrupo(frios, "secao-frios");
+    criarGrupo(horti, "secao-hortifruti");
+    criarGrupo(higiene, "secao-higiene");
+    criarGrupo(outros, "secao-outros");
+    atualizarHistorico();
 }
 
-function criarSecao(lista, idContainer) {
-    const container = document.getElementById(idContainer);
-    container.innerHTML = "";
+function criarGrupo(lista, id) {
+    const divPai = document.getElementById(id);
+    divPai.innerHTML = "";
     lista.forEach(nome => {
-        const id = contadorId++;
-        itens.push({ id, nome, qt:0, preco:0, comprado:false });
-        const div = document.createElement("div");
-        div.className = "item-produto";
-        div.id = `item-${id}`;
-        div.innerHTML = `
+        const idUnico = contadorId++;
+        itens.push({id:idUnico, nome: nome, qt:0, preco:0});
+        const itemEl = document.createElement("div");
+        itemEl.className = "item-produto";
+        itemEl.id = `item-${idUnico}`;
+        itemEl.innerHTML = `
             <span class="nome">${nome}</span>
-            <input type="number" placeholder="QT" min="0" onchange="atualizarQt(${id}, this.value)">
-            <input type="number" placeholder="R$" min="0" step="0.01" onchange="atualizarPreco(${id}, this.value)">
+            <input type="number" placeholder="QT" min="0" oninput="mudouQt(${idUnico},this.value)">
+            <input type="text" placeholder="R$" oninput="mudouPreco(${idUnico},this.value)">
             <span class="subtotal">R$ 0,00</span>
-            <button class="btn-marcar" onclick="marcar(${id})">✓</button>
+            <button class="btn-marcar" onclick="marcar(${idUnico})">✓</button>
         `;
-        container.appendChild(div);
+        divPai.appendChild(itemEl);
     });
 }
 
-// ✅ FUNÇÃO DE PESQUISA/FILTRO
+// 🔍 PESQUISA
 function filtrarItens() {
-    const termo = document.getElementById("pesquisa").value.toLowerCase().trim();
-    const todosItens = document.querySelectorAll(".item-produto");
-    
-    todosItens.forEach(div => {
-        const nomeItem = div.querySelector(".nome").textContent.toLowerCase();
-        // Mostra se o nome contém o termo buscado, senão esconde
-        if (nomeItem.includes(termo)) {
-            div.classList.remove("oculto");
-        } else {
-            div.classList.add("oculto");
-        }
+    const termo = document.getElementById("pesquisa").value.toLowerCase();
+    document.querySelectorAll(".item-produto").forEach(el => {
+        const nome = el.querySelector(".nome").textContent.toLowerCase();
+        el.classList.toggle("oculto", !nome.includes(termo));
     });
 }
 
-// ============== CÁLCULOS E MARCAÇÃO ==============
-function atualizarQt(id, valor) {
-    const item = itens.find(i => i.id === id);
-    if (item) { item.qt = parseFloat(valor) || 0; calcularTotal(); }
+// ✅ CÁLCULO COM VÍRGULA (BRASIL)
+function mudouQt(id, val) {
+    const item = itens.find(i=>i.id===id);
+    if (!item) return;
+    item.qt = parseFloat(val.replace(",", ".")) || 0;
+    calcularTudo();
 }
-function atualizarPreco(id, valor) {
-    const item = itens.find(i => i.id === id);
-    if (item) { item.preco = parseFloat(valor.replace(",", ".")) || 0; calcularTotal(); }
+
+function mudouPreco(id, val) {
+    const item = itens.find(i=>i.id===id);
+    if (!item) return;
+    // ✅ TROCA VÍRGULA POR PONTO PARA CÁLCULO, MAS USUÁRIO VÊ SÓ VÍRGULA
+    item.preco = parseFloat(val.replace(",", ".")) || 0;
+    calcularTudo();
 }
-function marcar(id) {
-    document.getElementById(`item-${id}`).classList.toggle("comprado");
-}
-function calcularTotal() {
+
+function calcularTudo() {
     let totalGeral = 0;
-    itens.forEach(item => {
-        const subtotal = item.qt * item.preco;
-        totalGeral += subtotal;
-        const divItem = document.getElementById(`item-${item.id}`);
-        divItem.querySelector(".subtotal").textContent = `R$ ${subtotal.toFixed(2)}`;
+    itens.forEach(item=>{
+        const subt = item.qt * item.preco;
+        totalGeral += subt;
+        document.getElementById(`item-${item.id}`).querySelector(".subtotal").textContent = 
+            "R$ " + subt.toFixed(2).replace(".", ",");
     });
-    document.getElementById("total").textContent = totalGeral.toFixed(2);
+    document.getElementById("total").textContent = totalGeral.toFixed(2).replace(".", ",");
     return totalGeral;
 }
 
-// ============== FINALIZAR COMPRAS = SALVA NO HISTÓRICO ==============
+function marcar(id) {
+    document.getElementById(`item-${id}`).classList.toggle("comprado");
+}
+
+// 💾 HISTÓRICO
 function finalizarCompras() {
-    const total = calcularTotal();
-    const mesAno = obterMesAno();
+    const total = calcularTudo();
+    const mes = obterMes();
+    if (total <= 0) return alert("Preencha os valores primeiro!");
 
-    if (total <= 0) {
-        alert("⚠️ Nenhum valor calculado! Preencha os itens antes de finalizar.");
-        return;
-    }
-
-    const indiceExistente = historico.findIndex(h => h.mes === mesAno);
-    if (indiceExistente >= 0) {
-        historico[indiceExistente].valor = total;
-        alert(`✅ Valor atualizado: ${mesAno} — R$ ${total.toFixed(2)}`);
-    } else {
-        historico.push({ mes: mesAno, valor: total });
-        alert(`🎉 Compras de ${mesAno} finalizadas!\nTotal salvo: R$ ${total.toFixed(2)}`);
-    }
-
-    localStorage.setItem("historicoComprasDiniz", JSON.stringify(historico));
-    atualizarHistoricoTela();
+    const ind = historico.findIndex(h=>h.mes===mes);
+    if (ind >= 0) historico[ind].valor = total;
+    else historico.push({mes, valor:total});
+    
+    localStorage.setItem("historicoDiniz", JSON.stringify(historico));
+    alert(`✅ Salvo!\nMês: ${mes}\nTotal: R$ ${total.toFixed(2).replace(".", ",")}`);
+    atualizarHistorico();
 }
 
-// ============== LIMPAR TODO O HISTÓRICO (COM SEGURANÇA) ==============
 function limparTodoHistorico() {
-    if (!confirm("⚠️ ATENÇÃO! Isso apagará TODOS os meses salvos no histórico.\nEssa ação NÃO pode ser desfeita!\nTem certeza?")) {
-        return;
-    }
+    if (!confirm("Apagar TODO o histórico?")) return;
     historico = [];
-    localStorage.removeItem("historicoComprasDiniz");
-    alert("✅ Histórico apagado completamente!");
-    atualizarHistoricoTela();
+    localStorage.removeItem("historicoDiniz");
+    atualizarHistorico();
 }
 
-// ============== MOSTRA HISTÓRICO NA TELA ==============
-function atualizarHistoricoTela() {
-    const container = document.getElementById("listaHistorico");
-    if (historico.length === 0) {
-        container.innerHTML = "<p style='color:#666;'>Nenhuma compra finalizada ainda.</p>";
+function atualizarHistorico() {
+    const lista = document.getElementById("listaHistorico");
+    if (!historico.length) {
+        lista.innerHTML = "<p style='color:#666'>Sem histórico ainda.</p>";
         return;
     }
-    container.innerHTML = historico
-        .sort((a, b) => a.mes.localeCompare(b.mes))
-        .map(h => `<div class="item-historico"><span>📅 ${h.mes}</span><span>💲 R$ ${h.valor.toFixed(2)}</span></div>`)
+    lista.innerHTML = historico
+        .sort((a,b)=>a.mes.localeCompare(b.mes))
+        .map(h=>`<div class="item-historico"><span>📅 ${h.mes}</span><span>💲 R$ ${h.valor.toFixed(2).replace(".", ",")}</span></div>`)
         .join("");
 }
 
-// ============== LIMPA PARA PRÓXIMA COMPRA ==============
 function iniciarNovaLista() {
-    if (!confirm("🔄 Isso vai zerar quantidades e preços para nova compra.\nHistórico dos meses anteriores PERMANECE SALVO!\nContinuar?")) {
-        return;
-    }
-    itens.forEach(item => {
-        item.qt = 0;
-        item.preco = 0;
-        item.comprado = false;
-    });
+    if (!confirm("Zerar quantidades/preços? Histórico fica salvo.")) return;
+    itens.forEach(i=>{i.qt=0; i.preco=0;});
     inicializar();
 }
 
