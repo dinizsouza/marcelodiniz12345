@@ -124,7 +124,6 @@
             transition: all 0.3s ease;
         }
         
-        /* ✅ Esconde itens na busca */
         .item-produto.oculto { display: none; }
         .comprado { background-color: #e8ffeb; text-decoration: line-through; color: #666; }
         
@@ -156,6 +155,14 @@
             color: white;
             padding: 6px 10px;
             font-size: 13px;
+        }
+
+        /* 🥬 DIFERENCIA HORTIFRUTI */
+        .etiqueta-medida {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2b6cb0;
+            min-width: 30px;
         }
         
         .total-geral {
@@ -216,7 +223,7 @@
 <h2>🧀 Frios</h2>
 <div id="secao-frios"></div>
 
-<h2>🥬 Horti Fruti</h2>
+<h2>🥬 Horti Fruti <small style="color:green;">(Por Quilo)</small></h2>
 <div id="secao-hortifruti"></div>
 
 <h2>🧼 Higiene / Limpeza</h2>
@@ -233,7 +240,7 @@
 <footer>Marcelo Diniz App ©</footer>
 
 <script>
-// ============== LISTA DE PRODUTOS COMPLETA ==============
+// ============== LISTA DE PRODUTOS ==============
 const basicos = [
     "Arroz","Feijão","Café","Açúcar","Macarrão","Molho Tomate","Queijo Ralado",
     "Farinha Trigo","Farinha Temperada","Molho Pimenta","Shoyu","Maionese",
@@ -244,7 +251,8 @@ const basicos = [
 ];
 const mistura = ["Ovos","Hambúrguer","Frango","Carne Moída","Linguiça","Bife"];
 const frios = ["Mortadela","Muçarela","Presunto"];
-const horti = ["Alface","Cebola","Tomate","Couve","Manga","Laranja","Maçã","Uva"];
+// 🥬 HORTIFRUTI: POR QUILO
+const horti = ["Alface","Cebola","Tomate","Couve","Manga","Laranja","Maçã","Uva","Batata","Cenoura","Abobrinha","Pimentão"];
 const higiene = ["Papel Higiênico","Sabão Pó","Detergente","Desinfetante","Saco Lixo"];
 const outros = ["Item Extra"];
 
@@ -262,28 +270,37 @@ function obterMes() {
 // ============== INICIALIZA ==============
 function inicializar() {
     document.getElementById("mesAtual").textContent = `MÊS: ${obterMes().toUpperCase()}`;
-    criarGrupo(basicos, "secao-basicos");
-    criarGrupo(mistura, "secao-mistura");
-    criarGrupo(frios, "secao-frios");
-    criarGrupo(horti, "secao-hortifruti");
-    criarGrupo(higiene, "secao-higiene");
-    criarGrupo(outros, "secao-outros");
+    criarGrupo(basicos, "secao-basicos", false); // false = quantidade/unidade
+    criarGrupo(mistura, "secao-mistura", false);
+    criarGrupo(frios, "secao-frios", false);
+    criarGrupo(horti, "secao-hortifruti", true); // ✅ true = POR QUILO
+    criarGrupo(higiene, "secao-higiene", false);
+    criarGrupo(outros, "secao-outros", false);
     atualizarHistorico();
 }
 
-function criarGrupo(lista, id) {
+// 🧩 CRIA GRUPO: diferença entre unidade e kg
+function criarGrupo(lista, id, ePorKg) {
     const divPai = document.getElementById(id);
     divPai.innerHTML = "";
     lista.forEach(nome => {
         const idUnico = contadorId++;
-        itens.push({id:idUnico, nome: nome, qt:0, preco:0});
+        itens.push({id:idUnico, nome: nome, medida: ePorKg ? "kg" : "un", valorMedida:0, precoUnitario:0});
+        
         const itemEl = document.createElement("div");
         itemEl.className = "item-produto";
         itemEl.id = `item-${idUnico}`;
+        
+        // 🥬 Muda etiqueta para Hortifruti
+        const etiqueta = ePorKg ? "Kg" : "Qt";
+        const dicaPreco = ePorKg ? "R$/kg" : "R$";
+        
         itemEl.innerHTML = `
             <span class="nome">${nome}</span>
-            <input type="number" placeholder="QT" min="0" oninput="mudouQt(${idUnico},this.value)">
-            <input type="text" placeholder="R$" oninput="mudouPreco(${idUnico},this.value)">
+            <span class="etiqueta-medida">${etiqueta}:</span>
+            <input type="text" placeholder="${etiqueta}" oninput="mudouMedida(${idUnico},this.value)">
+            <span class="etiqueta-medida">R$:</span>
+            <input type="text" placeholder="${dicaPreco}" oninput="mudouPreco(${idUnico},this.value)">
             <span class="subtotal">R$ 0,00</span>
             <button class="btn-marcar" onclick="marcar(${idUnico})">✓</button>
         `;
@@ -300,26 +317,29 @@ function filtrarItens() {
     });
 }
 
-// ✅ CÁLCULO COM VÍRGULA (BRASIL)
-function mudouQt(id, val) {
+// ✅ CÁLCULO COM VÍRGULA BRASILEIRA
+function limparNumero(texto) {
+    return parseFloat(texto.replace(",", ".")) || 0;
+}
+
+function mudouMedida(id, val) {
     const item = itens.find(i=>i.id===id);
     if (!item) return;
-    item.qt = parseFloat(val.replace(",", ".")) || 0;
+    item.valorMedida = limparNumero(val);
     calcularTudo();
 }
 
 function mudouPreco(id, val) {
     const item = itens.find(i=>i.id===id);
     if (!item) return;
-    // ✅ TROCA VÍRGULA POR PONTO PARA CÁLCULO, MAS USUÁRIO VÊ SÓ VÍRGULA
-    item.preco = parseFloat(val.replace(",", ".")) || 0;
+    item.precoUnitario = limparNumero(val);
     calcularTudo();
 }
 
 function calcularTudo() {
     let totalGeral = 0;
     itens.forEach(item=>{
-        const subt = item.qt * item.preco;
+        const subt = item.valorMedida * item.precoUnitario;
         totalGeral += subt;
         document.getElementById(`item-${item.id}`).querySelector(".subtotal").textContent = 
             "R$ " + subt.toFixed(2).replace(".", ",");
@@ -367,8 +387,8 @@ function atualizarHistorico() {
 }
 
 function iniciarNovaLista() {
-    if (!confirm("Zerar quantidades/preços? Histórico fica salvo.")) return;
-    itens.forEach(i=>{i.qt=0; i.preco=0;});
+    if (!confirm("Zerar medidas/preços? Histórico fica salvo.")) return;
+    itens.forEach(i=>{i.valorMedida=0; i.precoUnitario=0;});
     inicializar();
 }
 
