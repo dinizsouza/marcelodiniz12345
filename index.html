@@ -5,260 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marcelo Diniz App 🛒</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #f7f7f7;
-            padding: 15px;
-            max-width: 950px;
-            margin: auto;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f7f7f7; padding: 12px; max-width: 650px; margin: auto; }
+
         header {
-            text-align: center;
-            background: #222;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            background: #222; color: white; text-align: center;
+            padding: 18px; border-radius: 10px; margin-bottom: 15px;
         }
-        h1 { font-size: 22px; margin-bottom: 5px; }
-        .subtitulo { font-size: 14px; opacity: 0.9; }
+        h1 { font-size: 22px; margin-bottom: 4px; }
 
-        /* 🔍 PESQUISA */
-        .barra-pesquisa {
-            background: white;
-            padding: 12px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
+        /* 📂 MENU/TÓPICOS PRINCIPAIS - SÓ ELES APARECEM NO INÍCIO */
+        .menu-categorias {
+            display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;
         }
-        .barra-pesquisa input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
+        .aba {
+            width: 100%; padding: 18px 15px; border: none; border-radius: 12px;
+            font-weight: bold; font-size: 17px; cursor: pointer; 
+            background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            text-align: left; display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.2s ease;
         }
-        .barra-pesquisa input:focus {
-            outline: none;
-            border-color: #2b6cb0;
-        }
-
-        /* 📑 CABEÇALHO PRINCIPAL */
-        .cabecalho-tabela {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: headerbg;
-            font-weight: bold;
-            padding: 10px 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #333;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .cab-nome { flex: 2; min-width: 140px; }
-        .cab-medida { width: 60px; text-align: center; }
-        .cab-preco { width: 70px; text-align: center; }
-        .cab-subtotal { width: 90px; text-align: right; }
-        .cab-acao { width: 40px; text-align: center; }
-
-        /* 📌 CABEÇALHO INTERNO POR CATEGORIA */
-        .cabecalho-categoria {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f0f4f8;
-            font-weight: bold;
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #555;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
+        .aba::after { content: "▼"; font-size: 14px; }
+        .aba.ativa { background: #ffc107; }
+        .aba.ativa::after { content: "▲"; }
 
         .mes-atual {
-            text-align: center;
-            background: #ffc107;
-            color: #000;
-            font-weight: bold;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 17px;
+            background: #ffc107; text-align: center; padding: 12px; border-radius: 8px;
+            font-weight: bold; font-size: 16px; margin-bottom: 15px;
         }
+
+        .barra-pesquisa {
+            background: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .barra-pesquisa input {
+            width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px;
+        }
+
+        /* ✅ ADICIONAR NOVO ITEM */
+        .adicionar-item {
+            background: #e8f4ff; padding: 12px; border-radius: 10px; margin-bottom: 15px;
+            display: flex; gap: 8px; flex-wrap: wrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .adicionar-item input {
+            flex: 1; min-width: 180px; padding: 10px; border: 1px solid #bbb; border-radius: 6px; font-size: 14px;
+        }
+        .btn-adicionar {
+            background: #2b6cb0; color: white; border: none; padding: 10px 16px;
+            border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+
         .painel-historico {
-            background: #e9ecef;
-            padding: 18px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .cabecalho-historico {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
-        .painel-historico h3 {
-            color: #2b6cb0;
-            margin: 0;
+        .btn-limpar-historico {
+            background: #dc3545; color: white; border: none; padding: 8px 12px;
+            border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: bold;
         }
         .item-historico {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-            font-size: 14px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .forma-pagto {
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-        }
-        .pagto-dinheiro { background: #28a745; }
-        .pagto-pix { background: #007bff; }
-        .pagto-credito { background: #6f42c1; }
-        .status-pago { color: #28a745; font-weight: bold; }
-
-        .botoes {
-            text-align: center;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        button {
-            padding: 12px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .btn-finalizar { background: #28a745; color: white; }
-        .btn-limpar-lista { background: #fd7e14; color: white; }
-        .btn-limpar-historico { background: #dc3545; color: white; padding: 8px 12px; font-size: 13px; }
-        
-        h2 {
-            color: #2b6cb0;
-            margin: 25px 0 12px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #e2e8f0;
-            font-size: 18px;
-        }
-        
-        .item-produto {
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            margin: 6px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex-wrap: wrap;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .item-produto.oculto { display: none; }
-        .comprado { background-color: #e8ffeb; text-decoration: line-through; color: #666; }
-        
-        .nome {
-            font-weight: bold;
-            flex: 2;
-            min-width: 160px;
-            font-size: 15px;
-        }
-        
-        .etiqueta-medida {
-            font-size: 12px;
-            font-weight: bold;
-            color: #2b6cb0;
-            min-width: 30px;
+            display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;
+            font-weight: 500; font-size: 14px;
         }
 
-        input {
-            width: 70px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 14px;
+        .botoes { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { border: none; border-radius: 8px; padding: 12px; font-weight: bold; cursor: pointer; }
+        .btn-finalizar { flex: 1; background: #28a745; color: white; }
+        .btn-nova { flex: 1; background: #fd7e14; color: white; }
+
+        /* 📦 CONTEÚDO/LISTA: INICIALMENTE FECHADO/OCULTO */
+        .categoria-conteudo { 
+            display: none; background: #fffdf5; border-radius: 10px; padding: 15px; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 12px;
+            border-top: 3px solid #ffc107;
         }
-        
-        .subtotal {
-            font-weight: bold;
-            color: #2c5282;
-            min-width: 100px;
-            text-align: right;
-        }
-        
-        .btn-marcar {
-            background: #28a745;
-            color: white;
-            padding: 6px 10px;
+        .categoria-conteudo.visivel { display: block; }
+
+        .cabecalho-tabela {
+            display: grid; grid-template-columns: 2fr 1fr 1fr auto;
+            font-weight: bold; padding: 8px 4px; border-bottom: 2px solid #eee; margin-bottom: 8px;
             font-size: 13px;
         }
+        .aviso-horti {
+            background: #fff3cd; text-align: center; padding: 6px; border-radius: 6px;
+            margin-bottom: 10px; font-size: 13px; font-weight: bold; color: #856404;
+        }
+        .item-produto {
+            display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 6px;
+            align-items: center; padding: 10px 4px; border-bottom: 1px solid #f1f1f1;
+            transition: opacity 0.3s ease;
+        }
+        .item-produto.oculto { display: none; }
+        .item-produto input {
+            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+            text-align: center;
+        }
+        .nome { font-weight: 500; font-size: 14px; }
+        .check {
+            background: #28a745; color: white; border: none; padding: 7px 10px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;
+        }
 
-        /* 💳 FORMA DE PAGAMENTO */
-        .secao-pagamento {
-            background: #fff;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .secao-pagamento h4 { margin-bottom: 10px; color: #222; }
-        .opcao-pagto {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .opcao-pagto.selecionado {
-            border-color: #222;
-            box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
-        }
-        .op-dinheiro { background: #d4edda; color: #155724; }
-        .op-pix { background: #cce5ff; color: #004085; }
-        .op-credito { background: #e2d9f3; color: #5a2d82; }
-        
         .total-geral {
-            background: #222;
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
-            text-align: right;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #555;
-            font-weight: bold;
+            background: #222; color: white; text-align: right; padding: 18px; border-radius: 10px;
+            font-size: 20px; font-weight: bold; margin-top: 15px;
         }
     </style>
 </head>
@@ -266,316 +120,295 @@
 
 <header>
     <h1>🛒 Lista de Compras</h1>
-    <div class="subtitulo">Marcelo Diniz App</div>
+    <p>Marcelo Diniz App</p>
 </header>
 
-<!-- 🔍 PESQUISA -->
-<div class="barra-pesquisa">
-    <input type="text" id="pesquisa" placeholder="🔍 Buscar produto..." oninput="filtrarItens()">
-</div>
-
-<!-- 📑 CABEÇALHO PRINCIPAL -->
-<div class="cabecalho-tabela">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt/Kg</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
+<!-- 📂 TÓPICOS/MENU: SÓ ELES APARECEM NO INÍCIO -->
+<div class="menu-categorias">
+    <button class="aba" data-cat="basicos">📦 Básicos Essencial</button>
+    <button class="aba" data-cat="mistura">🥩 Mistura Carne</button>
+    <button class="aba" data-cat="frios">🧀 Frios</button>
+    <button class="aba" data-cat="hortifruti">🥬 Horti Fruti (Kg)</button>
+    <button class="aba" data-cat="higiene">🧼 Higiene Limpeza</button>
 </div>
 
 <div class="mes-atual" id="mesAtual"></div>
+
+<!-- 🔍 BUSCA -->
+<div class="barra-pesquisa">
+    <input type="text" id="pesquisa" placeholder="🔍 Buscar produto..." oninput="filtrarTodos()">
+</div>
+
+<!-- ✅ ADICIONAR PRODUTO NOVO -->
+<div class="adicionar-item">
+    <input type="text" id="novoNome" placeholder="Escolha um tópico, digite e adicione..." onkeydown="if(event.key==='Enter')adicionarProduto()">
+    <button class="btn-adicionar" onclick="adicionarProduto()">➕ Adicionar</button>
+</div>
 
 <!-- 📊 HISTÓRICO -->
 <div class="painel-historico">
     <div class="cabecalho-historico">
         <h3>📊 Histórico Mensal</h3>
-        <button class="btn-limpar-historico" onclick="limparTodoHistorico()">🗑️ Limpar</button>
+        <button class="btn-limpar-historico" onclick="limparHistorico()">🗑️ Limpar</button>
     </div>
     <div id="listaHistorico"></div>
 </div>
 
-<!-- 💳 FORMA DE PAGAMENTO -->
-<div class="secao-pagamento">
-    <h4>💳 Forma de Pagamento para Finalizar:</h4>
-    <label class="opcao-pagto op-dinheiro selecionado" data-pagto="dinheiro" onclick="selecionarPagto('dinheiro')">💵 Dinheiro</label>
-    <label class="opcao-pagto op-pix" data-pagto="pix" onclick="selecionarPagto('pix')">📱 Pix</label>
-    <label class="opcao-pagto op-credito" data-pagto="credito" onclick="selecionarPagto('credito')">💳 Crédito</label>
-</div>
-
-<!-- 🛠️ BOTÕES -->
+<!-- 🎛️ BOTÕES -->
 <div class="botoes">
-    <button class="btn-finalizar" onclick="finalizarCompras()">✅ Finalizar Compra</button>
-    <button class="btn-limpar-lista" onclick="iniciarNovaLista()">🔄 Nova Lista</button>
+    <button class="btn-finalizar" onclick="finalizar()">✅ Finalizar</button>
+    <button class="btn-nova" onclick="novaLista()">🔄 Nova</button>
 </div>
 
-<!-- 📦 CATEGORIAS -->
-<h2>📦 Básicos Essenciais</h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-basicos"></div>
-
-<h2>🥩 Mistura / Carnes</h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-mistura"></div>
-
-<h2>🧀 Frios</h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-frios"></div>
-
-<h2>🥬 Horti Fruti <small style="color:green;">(Por Quilo)</small></h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Kg</span>
-    <span class="cab-preco">R$/Kg</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-hortifruti"></div>
-
-<h2>🧼 Higiene / Limpeza</h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-higiene"></div>
-
-<h2>📋 Outros</h2>
-<div class="cabecalho-categoria">
-    <span class="cab-nome">Produto</span>
-    <span class="cab-medida">Qt</span>
-    <span class="cab-preco">R$</span>
-    <span class="cab-subtotal">Subtotal</span>
-    <span class="cab-acao">✓</span>
-</div>
-<div id="secao-outros"></div>
-
-<!-- 💰 TOTAL -->
-<div class="total-geral">
-    TOTAL A PAGAR: R$ <span id="total">0,00</span>
+<!-- 📦 LISTAS: FECHADAS ATÉ CLICAR NO TÓPICO -->
+<div id="cat-basicos" class="categoria-conteudo">
+    <div class="cabecalho-tabela"><span>Produto</span><span>Qtde</span><span>R$</span><span>✓</span></div>
+    <div id="lista-basicos"></div>
 </div>
 
-<footer>Marcelo Diniz App ©</footer>
+<div id="cat-mistura" class="categoria-conteudo">
+    <div class="cabecalho-tabela"><span>Produto</span><span>Qtde</span><span>R$</span><span>✓</span></div>
+    <div id="lista-mistura"></div>
+</div>
+
+<div id="cat-frios" class="categoria-conteudo">
+    <div class="cabecalho-tabela"><span>Produto</span><span>Qtde</span><span>R$</span><span>✓</span></div>
+    <div id="lista-frios"></div>
+</div>
+
+<div id="cat-hortifruti" class="categoria-conteudo">
+    <div class="aviso-horti">⚖️ MEDIR POR QUILO (Kg)</div>
+    <div class="cabecalho-tabela"><span>Produto</span><span>Kg</span><span>R$/Kg</span><span>✓</span></div>
+    <div id="lista-hortifruti"></div>
+</div>
+
+<div id="cat-higiene" class="categoria-conteudo">
+    <div class="cabecalho-tabela"><span>Produto</span><span>Qtde</span><span>R$</span><span>✓</span></div>
+    <div id="lista-higiene"></div>
+</div>
+
+<div class="total-geral">TOTAL: R$ <span id="total">0,00</span></div>
 
 <script>
-// ============== LISTA DE PRODUTOS COM CORREÇÃO ==============
-const basicos = [
-    "Arroz","Feijão","Café","Açúcar","Macarrão","Molho Tomate","Queijo Ralado",
-    "Farinha Trigo","Farinha Temperada","Molho Pimenta","Shoyu","Maionese",
-    "Miojo","Iogurte","Sardinha","Atum","Ervilha","Milho Lata","Palito Dente",
-    "Sal Grosso","Carvão","Lâmpada","Pneus Carro","Vassoura","Rodo","Vela",
-    "Massa Bolo","Bolacha Recheada","Bolacha Doce","Bolacha Água/Sal",
-    "Tempero Sazón","Temperos Variados","Colorau","Alho","Leite","Creme Leite",
-    "Leite Condensado","Sucrilhos","Manteiga","Papel Toalha","Polpa Suco","Suco Pó",
-    "Requeijão","Vinagre","Pão Forma","Bisnaguinha","Pão Hot Dog","Panetone"
-];
-const mistura = ["Ovos","Hambúrguer","Frango","Carne Moída","Linguiça","Bife"];
-const frios = ["Mortadela","Muçarela","Presunto"];
-const horti = [
-    "Melancia","Maçã","Banana","Goiaba","Morango","Mamão","Cebola","Pepino",
-    "Abóbora","Alho","Coentro","Salsa","Alface","Tomate","Couve","Manga",
-    "Laranja","Uva","Batata","Cenoura","Abobrinha","Pimentão"
-];
-// ✅ CORREÇÃO: Absorvente no lugar de Intimis Gel Moda
-const higiene = [
-    "Absorvente","Shampoo Criança","Acetona","Lenço Umedecido","Fraldas",
-    "Escova de Dente","Cotonete","Enxaguante Bucal","Papel Higiênico","Sabão Pó",
-    "Detergente","Desinfetante","Saco Lixo"
-];
-const outros = ["Item Extra"];
+// ============== LISTA PADRÃO INICIAL ==============
+const categorias = {
+    basicos: [
+        "Arroz","Feijão","Café","Açúcar","Macarrão","Molho de Tomate","Queijo Ralado",
+        "Farinha de Trigo","Farinha Temperada","Molho de Pimenta","Shoyu","Maionese",
+        "Atum","Miojo","Massa Pronta para Bolo","Bolacha Recheada","Bolacha Doce",
+        "Bolacha de Água e Sal","Tempero Sazón","Temperos Variados","Colorau","Alho",
+        "Iogurte","Leite","Creme de Leite","Leite Condensado","Sucrilhos","Manteiga",
+        "Papel Toalha","Polpa de Suco","Suco em Pó","Requeijão","Vinagre",
+        "Achocolatado","Adoçante","Álcool Líquido","Creme","Cândida","Canjica","Gel de Cabelo",
+        "Pão de Forma","Bisnaguinha","Pão de Hot Dog","Panetone"
+    ],
+    mistura: [
+        "Cartela de Ovos","Hambúrguer","Frango","Steak","Carne Moída","Linguiça",
+        "Linguiça Calabresa","Carne Suína","Carne Bovina","Salsicha"
+    ],
+    frios: ["Mortadela","Muçarela","Presunto"],
+    hortifruti: [
+        "Alface","Cebola","Tomate","Couve","Manga","Laranja","Maçã","Uva","Melancia",
+        "Banana","Goiaba","Morango","Mamão","Pepino","Abóbora","Coentro","Salsa"
+    ],
+    higiene: [
+        "Papel Higiênico","Sabão em Pó","Pasta de Dente","Gel de Cabelo","Antitranspirante",
+        "Talco para Pé","Detergente","Amaciante","Shampoo","Creme de Cabelo","Desinfetante",
+        "Algodão","Escova de Dente","Álcool","Pastilha para Vaso","Veja","Pedra de Sabão",
+        "Saco de Lixo","Absorvente","Xampu Criança","Acetona","Lenço Umedecido","Fraldas",
+        "Cotonete","Enxaguante Bucal","Palito de Dente","Sal Grosso","Carvão","Lâmpada",
+        "Vassoura","Rodo","Vela"
+    ]
+};
 
-let contadorId = 0;
-let itens = [];
-let formaPagamento = "dinheiro";
-let historico = JSON.parse(localStorage.getItem("historicoDiniz") || "[]");
+let estado = JSON.parse(localStorage.getItem("estadoListaDiniz") || '{"itens":{},"comprados":[],"historico":[],"aba":null}');
+let itensComprados = estado.comprados || [];
+let historico = estado.historico || [];
+let abaAtiva = estado.aba;
+let idContador = 0;
 
-// ============== DATA ==============
-function obterMes() {
-    const agora = new Date();
-    const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-    return `${meses[agora.getMonth()]}/${agora.getFullYear()}`;
+// ============== SALVAMENTO AUTOMÁTICO ==============
+function salvarTudo() {
+    localStorage.setItem("estadoListaDiniz", JSON.stringify({
+        itens: estado.itens, comprados: itensComprados, historico: historico, aba: abaAtiva
+    }));
 }
 
-// ============== INICIALIZA ==============
-function inicializar() {
-    document.getElementById("mesAtual").textContent = `MÊS: ${obterMes().toUpperCase()}`;
-    criarGrupo(basicos, "secao-basicos", false);
-    criarGrupo(mistura, "secao-mistura", false);
-    criarGrupo(frios, "secao-frios", false);
-    criarGrupo(horti, "secao-hortifruti", true);
-    criarGrupo(higiene, "secao-higiene", false);
-    criarGrupo(outros, "secao-outros", false);
+// ============== INICIALIZAÇÃO ==============
+window.onload = () => {
+    mostrarMes();
+    prepararItens();
+    configurarMenu();
     atualizarHistorico();
-    destacarPagtoBotao();
-}
-
-function criarGrupo(lista, id, ePorKg) {
-    const divPai = document.getElementById(id);
-    divPai.innerHTML = "";
-    lista.forEach(nome => {
-        const idUnico = contadorId++;
-        itens.push({id:idUnico, nome: nome, medida: ePorKg ? "kg" : "un", valorMedida:0, precoUnitario:0});
-        
-        const itemEl = document.createElement("div");
-        itemEl.className = "item-produto";
-        itemEl.id = `item-${idUnico}`;
-        
-        const etiqueta = ePorKg ? "Kg" : "Qt";
-        const dicaPreco = ePorKg ? "R$/kg" : "R$";
-        
-        itemEl.innerHTML = `
-            <span class="nome">${nome}</span>
-            <span class="etiqueta-medida">${etiqueta}:</span>
-            <input type="text" placeholder="${etiqueta}" oninput="mudouMedida(${idUnico},this.value)">
-            <span class="etiqueta-medida">R$:</span>
-            <input type="text" placeholder="${dicaPreco}" oninput="mudouPreco(${idUnico},this.value)">
-            <span class="subtotal">R$ 0,00</span>
-            <button class="btn-marcar" onclick="marcar(${idUnico})">✓</button>
-        `;
-        divPai.appendChild(itemEl);
-    });
-}
-
-// 🔍 PESQUISA
-function filtrarItens() {
-    const termo = document.getElementById("pesquisa").value.toLowerCase();
-    document.querySelectorAll(".item-produto").forEach(el => {
-        const nome = el.querySelector(".nome").textContent.toLowerCase();
-        el.classList.toggle("oculto", !nome.includes(termo));
-    });
-}
-
-// ✅ CÁLCULO COM VÍRGULA
-function limparNumero(texto) {
-    return parseFloat(texto.replace(",", ".")) || 0;
-}
-
-function mudouMedida(id, val) {
-    const item = itens.find(i=>i.id===id);
-    if (!item) return;
-    item.valorMedida = limparNumero(val);
-    calcularTudo();
-}
-
-function mudouPreco(id, val) {
-    const item = itens.find(i=>i.id===id);
-    if (!item) return;
-    item.precoUnitario = limparNumero(val);
-    calcularTudo();
-}
-
-function calcularTudo() {
-    let totalGeral = 0;
-    itens.forEach(item=>{
-        const subt = item.valorMedida * item.precoUnitario;
-        totalGeral += subt;
-        document.getElementById(`item-${item.id}`).querySelector(".subtotal").textContent = 
-            "R$ " + subt.toFixed(2).replace(".", ",");
-    });
-    document.getElementById("total").textContent = totalGeral.toFixed(2).replace(".", ",");
-    return totalGeral;
-}
-
-function marcar(id) {
-    document.getElementById(`item-${id}`).classList.toggle("comprado");
-}
-
-// 💳 PAGAMENTO
-function selecionarPagto(tipo) {
-    formaPagamento = tipo;
-    destacarPagtoBotao();
-}
-function destacarPagtoBotao() {
-    document.querySelectorAll(".opcao-pagto").forEach(b=>b.classList.remove("selecionado"));
-    document.querySelector(`[data-pagto="${formaPagamento}"]`).classList.add("selecionado");
-}
-function getNomePagto(tipo) {
-    switch(tipo){
-        case "dinheiro": return "💵 Dinheiro";
-        case "pix": return "📱 Pix";
-        case "credito": return "💳 Crédito";
-        default: return tipo;
-    }
-}
-function getClassePagto(tipo) {
-    switch(tipo){
-        case "dinheiro": return "pagto-dinheiro";
-        case "pix": return "pagto-pix";
-        case "credito": return "pagto-credito";
-    }
-}
-
-// 💾 HISTÓRICO COM PAGAMENTO
-function finalizarCompras() {
-    const total = calcularTudo();
-    const mes = obterMes();
-    if (total <= 0) return alert("Preencha os valores primeiro!");
-
-    const ind = historico.findIndex(h=>h.mes===mes);
-    if (ind >= 0) {
-        historico[ind].valor = total;
-        historico[ind].pagto = formaPagamento;
-    } else {
-        historico.push({mes, valor:total, pagto: formaPagamento});
-    }
+    calcularTotal();
     
-    localStorage.setItem("historicoDiniz", JSON.stringify(historico));
-    alert(`✅ COMPRA PAGA!\nMês: ${mes}\nTotal: R$ ${total.toFixed(2).replace(".", ",")}\nForma: ${getNomePagto(formaPagamento)}`);
-    atualizarHistorico();
+    // Reabre o último tópico que estava aberto
+    if (abaAtiva) document.querySelector(`[data-cat="${abaAtiva}"]`)?.click();
+};
+
+function mostrarMes() {
+    const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+    document.getElementById("mesAtual").textContent = `MÊS: ${meses[new Date().getMonth()].toUpperCase()}/${new Date().getFullYear()}`;
 }
 
-function limparTodoHistorico() {
-    if (!confirm("⚠️ Apagar TODO o histórico e formas de pagamento?")) return;
-    historico = [];
-    localStorage.removeItem("historicoDiniz");
+function prepararItens() {
+    Object.keys(categorias).forEach(cat => {
+        if (!estado.itens[cat]) {
+            estado.itens[cat] = categorias[cat].map(nome => ({
+                id: idContador++, nome: nome, qt: 0, preco: 0, comprado: false
+            }));
+        } else {
+            idContador = Math.max(idContador, ...estado.itens[cat].map(i => i.id)) + 1;
+        }
+    });
+}
+
+// ============== FUNCIONAMENTO DOS TÓPICOS/MENU ✅ ==============
+function configurarMenu() {
+    document.querySelectorAll(".aba").forEach(botao => {
+        botao.onclick = () => {
+            const categoria = botao.dataset.cat;
+            
+            // Se clicar no mesmo tópico, fecha; senão, abre o novo
+            if (abaAtiva === categoria) {
+                abaAtiva = null;
+                botao.classList.remove("ativa");
+                document.getElementById(`cat-${categoria}`).classList.remove("visivel");
+            } else {
+                abaAtiva = categoria;
+                document.querySelectorAll(".aba").forEach(b => b.classList.remove("ativa"));
+                document.querySelectorAll(".categoria-conteudo").forEach(lista => lista.classList.remove("visivel"));
+                
+                botao.classList.add("ativa");
+                exibirLista(categoria); // Carrega e mostra os itens
+                document.getElementById(`cat-${categoria}`).classList.add("visivel");
+            }
+            salvarTudo();
+        };
+    });
+}
+
+function exibirLista(cat) {
+    const container = document.getElementById(`lista-${cat}`);
+    container.innerHTML = "";
+
+    estado.itens[cat].filter(produto => !produto.comprado).forEach(item => {
+        const linha = document.createElement("div");
+        linha.className = "item-produto";
+        linha.id = `item-${item.id}`;
+        linha.innerHTML = `
+            <span class="nome">${item.nome}</span>
+            <input type="number" class="qtde" min="0" step="any" placeholder="Qt/Kg" value="${item.qt || ''}">
+            <input type="number" class="preco" min="0" step="0.01" placeholder="R$" value="${item.preco || ''}">
+            <button class="check" onclick="marcarItem('${cat}', ${item.id})">✓</button>
+        `;
+        linha.querySelectorAll("input").forEach(campo => campo.oninput = () => atualizarValor(cat, item.id));
+        container.appendChild(linha);
+    });
+}
+
+// ============== AÇÕES NOS ITENS ==============
+function adicionarProduto() {
+    const nome = document.getElementById("novoNome").value.trim();
+    if (!abaAtiva) return alert("⚠️ Primeiro clique em um tópico para abrir!");
+    if (!nome) return alert("⚠️ Escreva o nome do produto novo!");
+
+    const novo = { id: idContador++, nome, qt: 0, preco: 0, comprado: false };
+    estado.itens[abaAtiva].push(novo);
+    exibirLista(abaAtiva); // Atualiza a lista aberta
+    document.getElementById("novoNome").value = "";
+    salvarTudo();
+}
+
+function atualizarValor(cat, id) {
+    const item = estado.itens[cat].find(i => i.id === id);
+    const linha = document.getElementById(`item-${id}`);
+    if (!item || !linha) return;
+    item.qt = parseFloat(linha.querySelector(".qtde").value) || 0;
+    item.preco = parseFloat(linha.querySelector(".preco").value) || 0;
+    calcularTotal();
+    salvarTudo();
+}
+
+function marcarItem(cat, id) {
+    const item = estado.itens[cat].find(i => i.id === id);
+    const linha = document.getElementById(`item-${id}`);
+    const qt = parseFloat(linha.querySelector(".qtde").value) || 0;
+    const preco = parseFloat(linha.querySelector(".preco").value) || 0;
+
+    if (qt <= 0 || preco <= 0) return alert("⚠️ Preencha quantidade e preço primeiro!");
+
+    item.qt = qt; item.preco = preco; item.comprado = true;
+    itensComprados.push({...item, categoria: cat, subtotal: qt * preco});
+
+    linha.style.opacity = "0";
+    setTimeout(() => linha.remove(), 300);
+    calcularTotal();
+    salvarTudo();
+}
+
+// ============== CÁLCULOS E BUSCA ==============
+function calcularTotal() {
+    let total = 0;
+    Object.values(estado.itens).flat().filter(i => !i.comprado).forEach(i => total += i.qt * i.preco);
+    itensComprados.forEach(i => total += i.subtotal);
+    document.getElementById("total").textContent = total.toFixed(2).replace(".", ",");
+}
+
+function filtrarTodos() {
+    const termo = document.getElementById("pesquisa").value.toLowerCase();
+    document.querySelectorAll(".item-produto").forEach(linha => {
+        const visivel = linha.querySelector(".nome").textContent.toLowerCase().includes(termo);
+        linha.classList.toggle("oculto", !visivel);
+    });
+}
+
+// ============== HISTÓRICO E CONTROLE GERAL ==============
+function obterMesAno() {
+    const m = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+    return `${m[new Date().getMonth()]}/${new Date().getFullYear()}`;
+}
+
+function finalizar() {
+    const total = calcularTotal();
+    const atual = obterMesAno();
+    if (total <= 0) return alert("⚠️ Nenhum valor registrado!");
+    
+    const existe = historico.findIndex(h => h.mes === atual);
+    existe >= 0 ? historico[existe].valor = total : historico.push({mes: atual, valor: total});
+    
+    salvarTudo();
+    alert(`✅ Fechado! ${atual} — Total: R$ ${total.toFixed(2).replace(".",",")}`);
     atualizarHistorico();
 }
 
 function atualizarHistorico() {
-    const lista = document.getElementById("listaHistorico");
-    if (!historico.length) {
-        lista.innerHTML = "<p style='color:#666'>Sem histórico de compras ainda.</p>";
-        return;
-    }
-    lista.innerHTML = historico
-        .sort((a,b)=>a.mes.localeCompare(b.mes))
-        .map(h=>`<div class="item-historico">
-            <span>📅 ${h.mes}</span>
-            <span class="status-pago">✅ PAGO</span>
-            <span>💲 R$ ${h.valor.toFixed(2).replace(".", ",")}</span>
-            <span class="forma-pagto ${getClassePagto(h.pagto || 'dinheiro')}">${getNomePagto(h.pagto || 'dinheiro')}</span>
-        </div>`)
-        .join("");
+    const painel = document.getElementById("listaHistorico");
+    painel.innerHTML = historico.length ? historico.map(h => 
+        `<div class="item-historico"><span>📅 ${h.mes}</span><span>R$ ${h.valor.toFixed(2).replace(".",",")}</span></div>`
+    ).join("") : "<p style='color:#777'>Sem histórico ainda</p>";
 }
 
-function iniciarNovaLista() {
-    if (!confirm("🔄 Zerar medidas/preços? Histórico com pagamento permanece salvo.")) return;
-    itens.forEach(i=>{i.valorMedida=0; i.precoUnitario=0;});
-    inicializar();
+function limparHistorico() {
+    if (!confirm("Deseja apagar todo o histórico de meses?")) return;
+    historico = []; salvarTudo(); atualizarHistorico();
 }
 
-window.onload = inicializar;
+function novaLista() {
+    if (!confirm("Zerar todos os produtos?\nO histórico de meses permanece salvo.")) return;
+    
+    // Reinicia os itens originais
+    Object.keys(categorias).forEach(cat => {
+        estado.itens[cat] = categorias[cat].map(n => ({id: idContador++, nome: n, qt:0, preco:0, comprado:false}));
+    });
+    itensComprados = []; abaAtiva = null;
+    
+    // Fecha todas as listas
+    document.querySelectorAll(".categoria-conteudo").forEach(l => l.classList.remove("visivel"));
+    document.querySelectorAll(".aba").forEach(b => b.classList.remove("ativa"));
+    
+    calcularTotal(); salvarTudo();
+}
 </script>
 </body>
 </html>
-            
-        
